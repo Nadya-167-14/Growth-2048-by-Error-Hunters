@@ -4,36 +4,32 @@ import subprocess
 import os
 
 pygame.init()
-screen = pygame.display.set_mode((450, 450))
+screen = pygame.display.set_mode((450, 450), pygame.RESIZABLE)
 clock = pygame.time.Clock()
 
 # Gambar
 title_image = pygame.image.load("assets/title.png")
-title_image = pygame.transform.scale(title_image, (200, 80)) 
 background = pygame.image.load("assets/Main menu.png")
 
-start_image = pygame.image.load("assets/start.png")
-start_hover = pygame.image.load("assets/start_hover.png")
-options_image = pygame.image.load("assets/options.png")  
-options_hover = pygame.image.load("assets/options_hover.png")
-detail_image = pygame.image.load("assets/detail.png")  
-detail_hover = pygame.image.load("assets/detail_hover.png")
-
-# Skala gambar tombol
-start_image = pygame.transform.scale(start_image, (200, 50))
-start_hover = pygame.transform.scale(start_hover, (200, 50))
-options_image = pygame.transform.scale(options_image, (200, 50))
-options_hover = pygame.transform.scale(options_hover, (200, 50))
-detail_image = pygame.transform.scale(detail_image, (200, 50))
-detail_hover = pygame.transform.scale(detail_hover, (200, 50))
+start_image_raw = pygame.image.load("assets/start.png")
+start_hover_raw = pygame.image.load("assets/start_hover.png")
+options_image_raw = pygame.image.load("assets/options.png")
+options_hover_raw = pygame.image.load("assets/options_hover.png")
+detail_image_raw = pygame.image.load("assets/detail.png")
+detail_hover_raw = pygame.image.load("assets/detail_hover.png")
 
 class Button:
-    def __init__(self, pos, image, hover_image, action_name):
-        self.image = image
-        self.hover_image = hover_image
-        self.rect = self.image.get_rect(center=pos)
+    def __init__(self, pos, size, image, hover_image, action_name):
+        self.original_image = image
+        self.original_hover_image = hover_image
+        self.resize(pos, size)
         self.hovered = False
         self.action_name = action_name
+
+    def resize(self, pos, size):
+        self.image = pygame.transform.scale(self.original_image, size)
+        self.hover_image = pygame.transform.scale(self.original_hover_image, size)
+        self.rect = self.image.get_rect(center=pos)
 
     def draw(self, surface):
         surface.blit(self.hover_image if self.hovered else self.image, self.rect)
@@ -44,23 +40,49 @@ class Button:
     def is_clicked(self, event):
         return self.hovered and event.type == pygame.MOUSEBUTTONDOWN and event.button == 1
 
-buttons = [
-    Button((225, 160), start_image, start_hover, "PLAY"),
-    Button((225, 230), options_image, options_hover, "OPTIONS"),
-    Button((225, 300), detail_image, detail_hover, "DETAIL"),
-]
-launch_game = False
+def get_scaled_buttons(screen_width, screen_height):
+    button_width = int(screen_width * 0.45)
+    button_height = int(screen_height * 0.16)
+    center_x = screen_width // 2
+    start_y = int(screen_height * 0.4)
+    spacing = int(button_height * 1.3)
 
+    return [
+        Button((center_x, start_y), (button_width, button_height), start_image_raw, start_hover_raw, "PLAY"),
+        Button((center_x, start_y + spacing), (button_width, button_height), options_image_raw, options_hover_raw, "OPTIONS"),
+        Button((center_x, start_y + 2 * spacing), (button_width, button_height), detail_image_raw, detail_hover_raw, "DETAIL"),
+    ]
+
+def draw_scaled_elements(screen, screen_width, screen_height):
+    # Background
+    bg_scaled = pygame.transform.scale(background, (screen_width, screen_height))
+    screen.blit(bg_scaled, (0, 0))
+
+    # Title
+    title_width = int(screen_width * 0.5)
+    title_height = int(screen_height * 0.18)
+    title_scaled = pygame.transform.scale(title_image, (title_width, title_height))
+    screen.blit(title_scaled, (screen_width // 2 - title_width // 2, int(screen_height * 0.08)))
+
+# Inisialisasi tombol pertama kali
+screen_width, screen_height = screen.get_size()
+buttons = get_scaled_buttons(screen_width, screen_height)
+
+launch_game = False
 running = True
+
 while running:
-    screen.blit(background, (0, 0))
-    screen.blit(title_image, (125, 40))
+    screen_width, screen_height = screen.get_size()
+    draw_scaled_elements(screen, screen_width, screen_height)
     mouse_pos = pygame.mouse.get_pos()
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
+        elif event.type == pygame.VIDEORESIZE:
+            screen = pygame.display.set_mode((event.w, event.h), pygame.RESIZABLE)
+            buttons = get_scaled_buttons(event.w, event.h)
 
         for button in buttons:
             if button.is_clicked(event):
@@ -71,7 +93,7 @@ while running:
                     pygame.quit()
                     if launch_game:
                         subprocess.Popen(["python", os.path.join("..", "2048", "demo.py")])
-                    sys.exit() 
+                    sys.exit()
 
     for button in buttons:
         button.check_hover(mouse_pos)
