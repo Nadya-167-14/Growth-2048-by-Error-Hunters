@@ -1,13 +1,5 @@
 import random
-
-# Dummy class untuk menghindari error jika TileAnimation belum dibuat
-class TileAnimation:
-    def __init__(self, start, end):
-        self.start = start
-        self.end = end
-        self.active = False
-
-import animation  # Jika kamu punya modul animasi sendiri, pastikan TileAnimation ada di sana
+from animation import TileAnimation
 
 GRID_SIZE = 4
 
@@ -16,7 +8,7 @@ class Tile:
         self.row = row
         self.col = col
         self.value = value
-        self.animation = None
+        self.animation = None 
 
     def set_position(self, row, col):
         self.row = row
@@ -31,7 +23,6 @@ class Game2048:
         self.tiles = []
         self.score = 0
         self.matrix = [[None]*GRID_SIZE for _ in range(GRID_SIZE)]
-        self.add_new_tile()
         self.add_new_tile()
 
     def add_new_tile(self):
@@ -70,12 +61,10 @@ class Game2048:
                         self.tiles.remove(b)
             return mat, score_gained
 
-        # Simpan kondisi awal
         old = [[tile.value if tile else 0 for tile in row] for row in self.matrix]
         mat = self.matrix
         score_this_move = 0
 
-        # Gerakkan sesuai arah
         if direction == "up":
             mat = transpose(mat)
             mat = compress(mat)
@@ -105,7 +94,6 @@ class Game2048:
             mat = compress(mat)
             mat = reverse(mat)
 
-        # Simpan posisi baru setiap tile
         new_positions = {}
         for i in range(GRID_SIZE):
             for j in range(GRID_SIZE):
@@ -113,7 +101,6 @@ class Game2048:
                 if tile:
                     new_positions[tile] = (i, j)
 
-        # Update animasi & posisi internal tile
         for tile, (new_row, new_col) in new_positions.items():
             if (tile.row, tile.col) != (new_row, new_col):
                 tile.move_to(new_row, new_col)
@@ -121,14 +108,26 @@ class Game2048:
         self.matrix = mat
         self.score += score_this_move
 
-        # Sinkronisasi posisi tile (untuk memastikan posisi row/col sesuai dengan matrix)
         for i in range(GRID_SIZE):
             for j in range(GRID_SIZE):
                 tile = self.matrix[i][j]
                 if tile:
                     tile.set_position(i, j)
 
-        # Tambahkan tile baru jika terjadi perubahan
         new_state = [[tile.value if tile else 0 for tile in row] for row in self.matrix]
         if old != new_state:
             self.add_new_tile()
+
+    def is_game_over(self):
+        for i in range(GRID_SIZE):
+            for j in range(GRID_SIZE):
+                tile = self.matrix[i][j]
+                if tile is None:
+                    return False
+                if j + 1 < GRID_SIZE and self.matrix[i][j + 1] is not None:
+                    if tile.value == self.matrix[i][j + 1].value:
+                        return False
+                if i + 1 < GRID_SIZE and self.matrix[i + 1][j] is not None:
+                    if tile.value == self.matrix[i + 1][j].value:
+                        return False
+        return True
