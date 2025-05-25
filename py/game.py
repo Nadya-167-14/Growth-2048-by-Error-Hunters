@@ -17,19 +17,24 @@ class Tile:
         self.set_position(new_row, new_col)
 
 class Game2048:
-    def __init__(self):
-        self.grid_size = 4 # Didefinisikan sebagai properti instance
+    def __init__(self, screen_width, screen_height): 
+        self.grid_size = 4
         self.tiles = []
         self.score = 0
         self.matrix = [[None]*self.grid_size for _ in range(self.grid_size)]
         self.active_powerup = None
-        self.add_new_tile()
-        self.add_new_tile()
-
+        
         self.TILE_SIZE = 100 
         self.TILE_SPACING = 10 
-        self.BOARD_X_OFFSET = 50 
-        self.BOARD_Y_OFFSET = 150
+        
+        self.total_board_dimension = self.grid_size * self.TILE_SIZE + (self.grid_size + 1) * self.TILE_SPACING
+        
+        self.BOARD_X_OFFSET = (screen_width - self.total_board_dimension) // 2
+        
+        self.BOARD_Y_OFFSET = 150 
+        
+        self.add_new_tile()
+        self.add_new_tile()
 
     def add_new_tile(self):
         empty = [(i, j) for i in range(self.grid_size) for j in range(self.grid_size) if self.matrix[i][j] is None]
@@ -138,38 +143,35 @@ class Game2048:
                         return False
         return True
 
+    def get_tile_draw_pos(self, row, col):
+        x_pos = self.BOARD_X_OFFSET + col * (self.TILE_SIZE + self.TILE_SPACING) + self.TILE_SPACING
+        y_pos = self.BOARD_Y_OFFSET + row * (self.TILE_SIZE + self.TILE_SPACING) + self.TILE_SPACING
+        return x_pos, y_pos
+
     def get_board_coords(self, mouse_pos):
         mouse_x, mouse_y = mouse_pos
         
-        total_board_width = self.grid_size * self.TILE_SIZE + (self.grid_size + 1) * self.TILE_SPACING
-        total_board_height = self.grid_size * self.TILE_SIZE + (self.grid_size + 1) * self.TILE_SPACING
-        
-        if not (self.BOARD_X_OFFSET <= mouse_x <= self.BOARD_X_OFFSET + total_board_width and
-                self.BOARD_Y_OFFSET <= mouse_y <= self.BOARD_Y_OFFSET + total_board_height):
+        board_end_x = self.BOARD_X_OFFSET + self.grid_size * (self.TILE_SIZE + self.TILE_SPACING) + self.TILE_SPACING
+        board_end_y = self.BOARD_Y_OFFSET + self.grid_size * (self.TILE_SIZE + self.TILE_SPACING) + self.TILE_SPACING
+
+        if not (self.BOARD_X_OFFSET <= mouse_x < board_end_x and
+                self.BOARD_Y_OFFSET <= mouse_y < board_end_y):
             return None, None
 
         relative_x = mouse_x - self.BOARD_X_OFFSET
         relative_y = mouse_y - self.BOARD_Y_OFFSET
 
-        col = -1
-        current_x = 0
-        for c_idx in range(self.grid_size):
-            current_x += self.TILE_SPACING 
-            if relative_x >= current_x and relative_x < current_x + self.TILE_SIZE:
-                col = c_idx
-                break
-            current_x += self.TILE_SIZE 
+        col = (relative_x - self.TILE_SPACING) // (self.TILE_SIZE + self.TILE_SPACING)
+        row = (relative_y - self.TILE_SPACING) // (self.TILE_SIZE + self.TILE_SPACING)
         
-        row = -1
-        current_y = 0
-        for r_idx in range(self.grid_size):
-            current_y += self.TILE_SPACING 
-            if relative_y >= current_y and relative_y < current_y + self.TILE_SIZE:
-                row = r_idx
-                break
-            current_y += self.TILE_SIZE 
-        
-        if row != -1 and col != -1:
-            return row, col
+        if 0 <= row < self.grid_size and 0 <= col < self.grid_size:
+            tile_start_x = self.TILE_SPACING + col * (self.TILE_SIZE + self.TILE_SPACING)
+            tile_start_y = self.TILE_SPACING + row * (self.TILE_SIZE + self.TILE_SPACING)
+
+            if (relative_x >= tile_start_x and relative_x < tile_start_x + self.TILE_SIZE and
+                relative_y >= tile_start_y and relative_y < tile_start_y + self.TILE_SIZE):
+                return row, col
+            else:
+                return None, None
         else:
             return None, None
