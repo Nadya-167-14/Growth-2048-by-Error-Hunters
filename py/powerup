@@ -1,0 +1,27 @@
+def pupuk(game, row, col):
+    for tile in game.tiles:
+        if tile.row == row and tile.col == col:
+            tile.value *= 2
+            return True
+    return False
+
+def penyiram_otomatis(game):
+    for i, t1 in enumerate(game.tiles):
+        for t2 in game.tiles[i + 1:]:
+            if t1.value == t2.value and t1.row == t2.row and abs(t1.col - t2.col) == 1:
+                t1.value *= 2
+                game.tiles.remove(t2)
+                return True
+            if t1.value == t2.value and t1.col == t2.col and abs(t1.row - t2.row) == 1:
+                t1.value *= 2
+                game.tiles.remove(t2)
+                return True
+    return False
+
+
+def bom(game, row, col):
+    for tile in game.tiles:
+        if tile.row == row and tile.col == col:
+            game.tiles.remove(tile)
+            return True
+    return False
