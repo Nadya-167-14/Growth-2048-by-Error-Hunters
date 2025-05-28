@@ -59,6 +59,10 @@ def draw_scaled_elements(screen, screen_width, screen_height):
     screen.blit(title_scaled, (screen_width // 2 - title_width // 2, int(screen_height * 0.08)))
 
 def show_menu(screen):
+    pygame.mixer.music.load("assets/sfx/backsound.mp3")
+    pygame.mixer.music.set_volume(0.5)
+    pygame.mixer.music.play(-1)
+
     clock = pygame.time.Clock()
     screen_width, screen_height = screen.get_size()
     buttons = get_scaled_buttons(screen_width, screen_height)
@@ -79,6 +83,8 @@ def show_menu(screen):
             for button in buttons:
                 if button.is_clicked(event):
                     if button.action_name == "PLAY":
+                        if button.action_name == "PLAY":
+                            pygame.mixer.music.fadeout(1000)  
                         return  
 
         for button in buttons:
