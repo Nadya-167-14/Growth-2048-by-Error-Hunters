@@ -31,7 +31,7 @@ class Game2048:
         
         self.BOARD_X_OFFSET = (screen_width - self.total_board_dimension) // 2
         
-        self.BOARD_Y_OFFSET = 150 
+        self.BOARD_Y_OFFSET = (screen_width - self.total_board_dimension) // 2
         
         self.add_new_tile()
         self.add_new_tile()
