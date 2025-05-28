@@ -5,19 +5,16 @@ from mechanics import mechanics_logic
 from menu import show_menu
 from powerup import pupuk, penyiram_otomatis, bom
 
-
 COLOR_TEXT = (50, 50, 50)
 
 pygame.init()
 pygame.mixer.init()
-pygame.font.init() 
-screen_width, screen_height = 500, 600 
+pygame.font.init()
+screen_width, screen_height = 500, 600
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("Growth 2048")
 
-init_ui_assets() 
-
-
+init_ui_assets()
 font_score = pygame.font.SysFont(None, 36)
 game_over_sfx = pygame.mixer.Sound("assets/sfx/gameover.mp3")
 
@@ -28,78 +25,76 @@ def draw_score(screen, score):
     score_y = screen.get_height() - 110
     screen.blit(score_text, (score_x, score_y))
 
-show_menu(screen)
+def run_game():
+    game = Game2048(screen_width, screen_height)
+    game_over = False
+    game_over_sound_played = False
+    clock = pygame.time.Clock()
 
-game = Game2048(screen_width, screen_height) 
-running = True
-game_over = False
-game_over_sound_played = False
-clock = pygame.time.Clock()
+    while True:
+        screen.fill((250, 246, 227))
 
-while running:
-    screen.fill((250, 246, 227))
+        powerup_buttons = draw_game(screen, game)
+        draw_score(screen, game.score)
 
-    powerup_buttons = draw_game(screen, game)
-    draw_score(screen, game.score)
+        if game.is_game_over():
+            menu_button_rect = draw_game_over(screen)
+            game_over = True
+            if not game_over_sound_played:
+                game_over_sfx.play()
+                game_over_sound_played = True
+        else:
+            menu_button_rect = None
 
-    if game.is_game_over():
-        draw_game_over(screen)
-        game_over = True
-        if not game_over_sound_played:
-            game_over_sfx.play()
-            game_over_sound_played = True 
+        pygame.display.flip()
 
-
-    pygame.display.flip()
-
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-        
-        elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_ESCAPE:
-                running = False
-            elif not game_over:
-                if event.key == pygame.K_UP:
-                    game.move("up")
-                elif event.key == pygame.K_DOWN:
-                    game.move("down")
-                elif event.key == pygame.K_LEFT:
-                    game.move("left")
-                elif event.key == pygame.K_RIGHT:
-                    game.move("right")
-        
-        elif event.type == pygame.MOUSEBUTTONDOWN:
-            mouse_x, mouse_y = pygame.mouse.get_pos()
-            
-            if not game_over:
-                if game.active_powerup is None:
-                    if powerup_buttons[0].collidepoint((mouse_x, mouse_y)):
-                        game.active_powerup = 'pupuk'
-                        print("Pupuk dipilih. Klik di papan untuk menggunakannya.")
-                    elif powerup_buttons[1].collidepoint((mouse_x, mouse_y)):
-                        penyiram_otomatis(game)
-                        game.active_powerup = None
-                    elif powerup_buttons[2].collidepoint((mouse_x, mouse_y)):
-                        game.active_powerup = 'bom'
-                        print("Bom dipilih. Klik di papan untuk meledakkannya.")
-                else:
-                    row, col = game.get_board_coords((mouse_x, mouse_y))
-                    
-                    if row is not None and col is not None:
-                        if game.active_powerup == 'pupuk':
-                            pupuk(game, row, col)
-                        elif game.active_powerup == 'bom':
-                            bom(game, row, col)
-                        
-                        game.active_powerup = None
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return False
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    return False
+                elif not game_over:
+                    if event.key == pygame.K_UP:
+                        game.move("up")
+                    elif event.key == pygame.K_DOWN:
+                        game.move("down")
+                    elif event.key == pygame.K_LEFT:
+                        game.move("left")
+                    elif event.key == pygame.K_RIGHT:
+                        game.move("right")
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_x, mouse_y = pygame.mouse.get_pos()
+                if game_over and menu_button_rect and menu_button_rect.collidepoint((mouse_x, mouse_y)):
+                    return True
+                if not game_over:
+                    if game.active_powerup is None:
+                        if powerup_buttons[0].collidepoint((mouse_x, mouse_y)):
+                            game.active_powerup = 'pupuk'
+                        elif powerup_buttons[1].collidepoint((mouse_x, mouse_y)):
+                            penyiram_otomatis(game)
+                        elif powerup_buttons[2].collidepoint((mouse_x, mouse_y)):
+                            game.active_powerup = 'bom'
                     else:
-                        print("Klik di luar papan, batalkan pemilihan power-up.")
-                        game.active_powerup = None
+                        row, col = game.get_board_coords((mouse_x, mouse_y))
+                        if row is not None and col is not None:
+                            if game.active_powerup == 'pupuk':
+                                pupuk(game, row, col)
+                            elif game.active_powerup == 'bom':
+                                bom(game, row, col)
+                            game.active_powerup = None
+                        else:
+                            game.active_powerup = None
 
-    if not game_over:
-        running = mechanics_logic(game)
-        
-    clock.tick(60)
+        if not game_over:
+            if not mechanics_logic(game):
+                return False
+
+        clock.tick(60)
+
+running = True
+while running:
+    show_menu(screen)
+    running = run_game()
 
 pygame.quit()
