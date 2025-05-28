@@ -37,6 +37,11 @@ def init_ui_assets():
     _ui_assets["font_tile"] = pygame.font.SysFont(None, 48, bold=True)
     _ui_assets["font_game_over"] = pygame.font.SysFont(None, 60, bold=True)
     _ui_assets["font_button"] = pygame.font.SysFont(None, 32)
+    _ui_assets["font_pixel_small"] = pygame.font.Font("assets/fonts/pressstart2p.ttf", 16)
+
+
+go_image = pygame.image.load("assets/go.png")
+go_image = pygame.transform.scale(go_image, (300, 150)) 
 
 def get_tile_color(value):
     return TILE_COLORS.get(value, (60, 58, 50))
@@ -131,6 +136,31 @@ def draw_game_over(screen):
     overlay.fill((0, 0, 0, 180))
     screen.blit(overlay, (0, 0))
 
-    game_over_text = _ui_assets["font_game_over"].render("Game Over!", True, (255, 255, 255))
-    text_rect = game_over_text.get_rect(center=(screen.get_width() // 2, screen.get_height() // 2))
-    screen.blit(game_over_text, text_rect)
+    screen_width, screen_height = screen.get_size()
+
+    go_rect = go_image.get_rect(center=(screen.get_width() // 2, screen.get_height() // 2 - 80))
+    screen.blit(go_image, go_rect)
+
+    font_pixel = _ui_assets["font_pixel_small"]
+    message_lines = [
+        "you have skill issues, dude~",
+        "better luck next time.."
+    ]
+
+    for i, line in enumerate(message_lines):
+        text_surface = font_pixel.render(line, True, (255, 255, 255))
+        text_rect = text_surface.get_rect(center=(screen.get_width() // 2, go_rect.bottom + 20 + i * 22))
+        screen.blit(text_surface, text_rect)
+
+    button_width, button_height = 160, 40
+    button_x = screen_width // 2 - button_width // 2
+    button_y = 360
+    pygame.draw.rect(screen, (100, 100, 255), (button_x, button_y, button_width, button_height), border_radius=10)
+
+    font_button = _ui_assets["font_pixel_small"]
+    menu_text = font_button.render("Back to Menu", True, (255, 255, 255))
+    menu_text_rect = menu_text.get_rect(center=(button_x + button_width // 2, button_y + button_height // 2))
+    screen.blit(menu_text, menu_text_rect)
+
+    # Return rect untuk interaksi klik
+    return pygame.Rect(button_x, button_y, button_width, button_height)
