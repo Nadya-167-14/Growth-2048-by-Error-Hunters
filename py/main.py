@@ -1,13 +1,15 @@
 import pygame
 from game import Game2048
-from ui import draw_game, draw_game_over, init_ui_assets
+from ui import draw_game, draw_game_over, init_ui_assets, _ui_assets
 from mechanics import mechanics_logic 
 from menu import show_menu
 from powerup import pupuk, penyiram_otomatis, bom
 
+
 COLOR_TEXT = (50, 50, 50)
 
 pygame.init()
+pygame.mixer.init()
 pygame.font.init() 
 screen_width, screen_height = 500, 600 
 screen = pygame.display.set_mode((screen_width, screen_height))
@@ -15,12 +17,15 @@ pygame.display.set_caption("Growth 2048")
 
 init_ui_assets() 
 
+
 font_score = pygame.font.SysFont(None, 36)
+game_over_sfx = pygame.mixer.Sound("assets/sfx/gameover.mp3")
 
 def draw_score(screen, score):
-    score_text = font_score.render(f"Score: {score}", True, COLOR_TEXT)
-    score_x = (screen_width - score_text.get_width()) // 2
-    score_y = 50 
+    font_pixel = _ui_assets["font_pixel_small"]
+    score_text = font_pixel.render(f"Score: {score}", True, COLOR_TEXT)
+    score_x = 20
+    score_y = screen.get_height() - 110
     screen.blit(score_text, (score_x, score_y))
 
 show_menu(screen)
@@ -28,6 +33,7 @@ show_menu(screen)
 game = Game2048(screen_width, screen_height) 
 running = True
 game_over = False
+game_over_sound_played = False
 clock = pygame.time.Clock()
 
 while running:
@@ -39,6 +45,10 @@ while running:
     if game.is_game_over():
         draw_game_over(screen)
         game_over = True
+        if not game_over_sound_played:
+            game_over_sfx.play()
+            game_over_sound_played = True 
+
 
     pygame.display.flip()
 
@@ -88,8 +98,8 @@ while running:
                         game.active_powerup = None
 
     if not game_over:
-        running = mechanics_logic(game) 
-
+        running = mechanics_logic(game)
+        
     clock.tick(60)
 
 pygame.quit()
