@@ -1,6 +1,6 @@
 import pygame
 from game import Game2048
-from ui import draw_game, draw_game_over, init_ui_assets, _ui_assets
+from ui import draw_game, draw_game_over, init_ui_assets, _ui_assets, draw_game_won
 from mechanics import mechanics_logic 
 from menu import show_menu
 from powerup import pupuk, penyiram_otomatis, bom
@@ -17,6 +17,7 @@ pygame.display.set_caption("Growth 2048")
 init_ui_assets()
 font_score = pygame.font.SysFont(None, 36)
 game_over_sfx = pygame.mixer.Sound("assets/sfx/gameover.mp3")
+game_won_sfx = pygame.mixer.Sound("assets/sfx/win.mp3")
 
 def draw_score(screen, score):
     font_pixel = _ui_assets["font_pixel_small"]
@@ -28,7 +29,9 @@ def draw_score(screen, score):
 def run_game():
     game = Game2048(screen_width, screen_height)
     game_over = False
+    game_won = False
     game_over_sound_played = False
+    game_won_sound_played = False
     clock = pygame.time.Clock()
 
     while True:
@@ -37,14 +40,20 @@ def run_game():
         powerup_buttons = draw_game(screen, game)
         draw_score(screen, game.score)
 
+        menu_button_rect = None
+
         if game.is_game_over():
             menu_button_rect = draw_game_over(screen)
             game_over = True
             if not game_over_sound_played:
                 game_over_sfx.play()
                 game_over_sound_played = True
-        else:
-            menu_button_rect = None
+        elif game.has_won():
+            menu_button_rect = draw_game_won(screen)
+            game_won = True
+            if not game_won_sound_played:
+                game_won_sfx.play()
+                game_won_sound_played = True
 
         pygame.display.flip()
 
@@ -54,7 +63,7 @@ def run_game():
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     return False
-                elif not game_over:
+                elif not game_over and not game_won:
                     if event.key == pygame.K_UP:
                         game.move("up")
                     elif event.key == pygame.K_DOWN:
@@ -65,9 +74,9 @@ def run_game():
                         game.move("right")
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_x, mouse_y = pygame.mouse.get_pos()
-                if game_over and menu_button_rect and menu_button_rect.collidepoint((mouse_x, mouse_y)):
+                if (game_over or game_won) and menu_button_rect and menu_button_rect.collidepoint((mouse_x, mouse_y)):
                     return True
-                if not game_over:
+                if not game_over and not game_won:
                     if game.active_powerup is None:
                         if powerup_buttons[0].collidepoint((mouse_x, mouse_y)):
                             game.active_powerup = 'pupuk'
@@ -86,7 +95,7 @@ def run_game():
                         else:
                             game.active_powerup = None
 
-        if not game_over:
+        if not game_over and not game_won:
             if not mechanics_logic(game):
                 return False
 
