@@ -1,4 +1,5 @@
 import random
+import pygame
 from animation import TileAnimation
 
 class Tile:
@@ -30,9 +31,14 @@ class Game2048:
         self.total_board_dimension = self.grid_size * self.TILE_SIZE + (self.grid_size + 1) * self.TILE_SPACING
         
         self.BOARD_X_OFFSET = (screen_width - self.total_board_dimension) // 2
-        
         self.BOARD_Y_OFFSET = (screen_width - self.total_board_dimension) // 2
-        
+
+        # Load sound effects
+        self.move_sfx = pygame.mixer.Sound("assets/sfx/move.wav")
+        self.merge_sfx = pygame.mixer.Sound("assets/sfx/merge.wav")
+        self.move_sfx.set_volume(0.5)
+        self.merge_sfx.set_volume(0.6)
+
         self.add_new_tile()
         self.add_new_tile()
 
@@ -62,6 +68,7 @@ class Game2048:
 
         def merge(mat):
             score_gained = 0
+            merged_any = False
             for i in range(self.grid_size):
                 for j in range(self.grid_size - 1):
                     a, b = mat[i][j], mat[i][j + 1]
@@ -70,6 +77,9 @@ class Game2048:
                         score_gained += a.value
                         mat[i][j + 1] = None
                         self.tiles.remove(b)
+                        merged_any = True
+            if merged_any:
+                self.merge_sfx.play()  # ← Play merge SFX
             return mat, score_gained
 
         old = [[tile.value if tile else 0 for tile in row] for row in self.matrix]
@@ -105,6 +115,7 @@ class Game2048:
             mat = compress(mat)
             mat = reverse(mat)
 
+        moved_any = False
         new_positions = {}
         for i in range(self.grid_size):
             for j in range(self.grid_size):
@@ -115,6 +126,7 @@ class Game2048:
         for tile, (new_row, new_col) in new_positions.items():
             if (tile.row, tile.col) != (new_row, new_col):
                 tile.move_to(new_row, new_col)
+                moved_any = True
 
         self.matrix = mat
         self.score += score_this_move
@@ -127,6 +139,8 @@ class Game2048:
 
         new_state = [[tile.value if tile else 0 for tile in row] for row in self.matrix]
         if old != new_state:
+            if moved_any:
+                self.move_sfx.play()  # ← Play move SFX
             self.add_new_tile()
 
     def is_game_over(self):
