@@ -13,4 +13,12 @@ Growth 2048 adalah permainan puzzle berbasis grid dengan ukuran 4x4 yang merupak
 
 ## Kontributor
 
+| Nama       | NIM                 | Kontribusi Utama                  |
+|------------|---------------------|-----------------------------------|
+| Nadya Shafwah Yusuf   | 123140167 | Pemilihan warna, UI, dan Desain Layup Menu |
+| Fadina Mustika Ratnaningsih  | 123140157 | Sistem power up, Fitur PowerUp |
+| M. Farhan Muzakhi  | 123140075 | Implementasi inti game, animasi tile, score |
+| Punky Wijayanto M  | 119140088 | Sound effect, Menu Option dan Detail |
+| Bulan Nindya Sapta Putri  | 120140231 | Pengujian dan debugging |
+
 ## Referensi
