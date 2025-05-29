@@ -1,6 +1,6 @@
 import pygame
 import sys
-from option import show_options
+from option import draw_options
 
 title_image = pygame.image.load("assets/title.png")
 background = pygame.image.load("assets/Main menu.png")
@@ -85,7 +85,7 @@ def show_menu(screen):
                         return
                     elif button.action_name == "OPTIONS":
                         pygame.mixer.music.pause()
-                        show_options(screen)
+                        draw_options(screen)
                         pygame.mixer.music.unpause()
 
         for button in buttons:
