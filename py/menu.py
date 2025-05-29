@@ -1,7 +1,7 @@
 import pygame
 import sys
+from option import show_options
 
-# Gambar dan pygame init akan dipanggil dari main.py
 title_image = pygame.image.load("assets/title.png")
 background = pygame.image.load("assets/Main menu.png")
 
@@ -48,11 +48,9 @@ def get_scaled_buttons(screen_width, screen_height):
     ]
 
 def draw_scaled_elements(screen, screen_width, screen_height):
-    # Background
     bg_scaled = pygame.transform.scale(background, (screen_width, screen_height))
     screen.blit(bg_scaled, (0, 0))
 
-    # Title
     title_width = int(screen_width * 0.5)
     title_height = int(screen_height * 0.18)
     title_scaled = pygame.transform.scale(title_image, (title_width, title_height))
@@ -83,9 +81,12 @@ def show_menu(screen):
             for button in buttons:
                 if button.is_clicked(event):
                     if button.action_name == "PLAY":
-                        if button.action_name == "PLAY":
-                            pygame.mixer.music.fadeout(1000)  
-                        return  
+                        pygame.mixer.music.fadeout(1000)
+                        return
+                    elif button.action_name == "OPTIONS":
+                        pygame.mixer.music.pause()
+                        show_options(screen)
+                        pygame.mixer.music.unpause()
 
         for button in buttons:
             button.check_hover(mouse_pos)
