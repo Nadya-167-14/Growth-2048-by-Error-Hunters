@@ -15,11 +15,14 @@ Growth 2048 adalah permainan puzzle berbasis grid dengan ukuran 4x4 yang merupak
 
 ## Cara Unduh Game
 1. Klik "<> Code" di repositori github dan unduh file ZIP
-2. Jika belum install pygame : 
+2. Jika belum install pygame, buka terminal dan install : 
+
 Windows : 
 `pip install pygame`
+
 Linux :
 `sudo apt-get install python3-pygame`
+
 Mac :
 `pip3 install pygame`
 3. Buka folder "py"
