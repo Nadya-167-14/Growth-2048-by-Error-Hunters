@@ -1,6 +1,6 @@
 import random
 import pygame
-from animation import TileAnimation
+from animation import TileAnimation 
 
 class Tile:
     def __init__(self, row, col, value):
@@ -31,10 +31,16 @@ class Game2048:
         self.BOARD_X_OFFSET = (screen_width - self.total_board_dimension) // 2
         self.BOARD_Y_OFFSET = (screen_height - self.total_board_dimension) // 3.5
 
-        self.move_sfx = pygame.mixer.Sound("assets/sfx/move.wav")
-        self.merge_sfx = pygame.mixer.Sound("assets/sfx/merge.wav")
-        self.move_sfx.set_volume(0.5)
-        self.merge_sfx.set_volume(0.6)
+        try:
+            pygame.mixer.init() 
+            self.move_sfx = pygame.mixer.Sound("assets/sfx/move.wav")
+            self.merge_sfx = pygame.mixer.Sound("assets/sfx/merge.wav")
+            self.move_sfx.set_volume(0.5)
+            self.merge_sfx.set_volume(0.6)
+        except pygame.error as e:
+            print(f"Peringatan: Gagal memuat sound effects: {e}. Pastikan file audio ada di 'assets/sfx/'.")
+            self.move_sfx = None
+            self.merge_sfx = None
 
         self.add_new_tile()
         self.add_new_tile()
@@ -71,14 +77,11 @@ class Game2048:
                     a, b = mat[i][j], mat[i][j + 1]
                     if a and b and a.value == b.value:
                         a.value *= 2
-                        if not a.animation:
-                            a.animation = TileAnimation((i, j), (i, j))
-                            a.animation.start_bounce()
                         score_gained += a.value
                         mat[i][j + 1] = None
                         self.tiles.remove(b)
                         merged_any = True
-            if merged_any:
+            if merged_any and self.merge_sfx:
                 self.merge_sfx.play()
             return mat, score_gained
 
@@ -139,7 +142,7 @@ class Game2048:
 
         new_state = [[tile.value if tile else 0 for tile in row] for row in self.matrix]
         if old != new_state:
-            if moved_any:
+            if moved_any and self.move_sfx: 
                 self.move_sfx.play()
             self.add_new_tile()
 
@@ -174,7 +177,7 @@ class Game2048:
         board_end_x = self.BOARD_X_OFFSET + self.grid_size * (self.TILE_SIZE + self.TILE_SPACING) + self.TILE_SPACING
         board_end_y = self.BOARD_Y_OFFSET + self.grid_size * (self.TILE_SIZE + self.TILE_SPACING) + self.TILE_SPACING
         if not (self.BOARD_X_OFFSET <= mouse_x < board_end_x and
-                self.BOARD_Y_OFFSET <= mouse_y < board_end_y):
+                        self.BOARD_Y_OFFSET <= mouse_y < board_end_y):
             return None, None
 
         relative_x = mouse_x - self.BOARD_X_OFFSET
