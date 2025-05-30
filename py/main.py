@@ -2,7 +2,7 @@ import pygame
 from game import Game2048
 from ui import draw_game, draw_game_over, init_ui_assets, _ui_assets, draw_game_won
 from menu import show_menu
-from powerup import pupuk, penyiram_otomatis, bom, active_animations
+from powerup import PupukPowerUp, PenyiramOtomatisPowerUp, BomPowerUp, active_animations
 from animation import BombAnimation, PupukAnimation
 from details import detail_menu
 import os
@@ -111,16 +111,16 @@ def run_game():
                         if powerup_buttons[0].collidepoint((mouse_x, mouse_y)):
                             game.active_powerup = 'pupuk'
                         elif powerup_buttons[1].collidepoint((mouse_x, mouse_y)):
-                            penyiram_otomatis(game)
+                            PenyiramOtomatisPowerUp(game).activate()
                         elif powerup_buttons[2].collidepoint((mouse_x, mouse_y)):
                             game.active_powerup = 'bom'
                     else:
                         row, col = game.get_board_coords((mouse_x, mouse_y))
                         if row is not None and col is not None:
                             if game.active_powerup == 'pupuk':
-                                pupuk(game, row, col)
+                                PupukPowerUp(game).activate(row, col)
                             elif game.active_powerup == 'bom':
-                                bom(game, row, col)
+                                BomPowerUp(game).activate(row, col)
                             game.active_powerup = None
                         else:
                             game.active_powerup = None
