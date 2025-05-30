@@ -71,6 +71,9 @@ class Game2048:
                     a, b = mat[i][j], mat[i][j + 1]
                     if a and b and a.value == b.value:
                         a.value *= 2
+                        if not a.animation:
+                            a.animation = TileAnimation((i, j), (i, j))
+                            a.animation.start_bounce()
                         score_gained += a.value
                         mat[i][j + 1] = None
                         self.tiles.remove(b)
