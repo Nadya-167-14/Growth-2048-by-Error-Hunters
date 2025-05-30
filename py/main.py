@@ -1,9 +1,11 @@
 import pygame
 from game import Game2048
 from ui import draw_game, draw_game_over, init_ui_assets, _ui_assets, draw_game_won
-from mechanics import mechanics_logic 
 from menu import show_menu
-from powerup import pupuk, penyiram_otomatis, bom
+from powerup import pupuk, penyiram_otomatis, bom, active_animations
+from animation import BombAnimation, PupukAnimation
+from details import detail_menu
+import os
 
 COLOR_TEXT = (50, 50, 50)
 
@@ -23,8 +25,24 @@ def draw_score(screen, score):
     font_pixel = _ui_assets["font_pixel_small"]
     score_text = font_pixel.render(f"Score: {score}", True, COLOR_TEXT)
     score_x = 20
-    score_y = screen.get_height() - 110
+    score_y = screen.get_height() - 100
     screen.blit(score_text, (score_x, score_y))
+
+def add_bomb_animation(row, col):
+    x = col * 100 + 20
+    y = row * 100 + 20
+    anim = BombAnimation((x, y))
+    active_animations.append(anim)
+
+def add_pupuk_animation(row, col):
+    x = col * 100 + 20
+    y = row * 100 + 20
+    anim = PupukAnimation((x, y))
+    active_animations.append(anim)
+
+import powerup
+powerup.add_bomb_animation = add_bomb_animation
+powerup.add_pupuk_animation = add_pupuk_animation
 
 def run_game():
     game = Game2048(screen_width, screen_height)
@@ -39,6 +57,18 @@ def run_game():
 
         powerup_buttons = draw_game(screen, game)
         draw_score(screen, game.score)
+
+        dt = clock.tick(60)
+        for anim in active_animations[:]:
+            try:
+                anim.update(dt)
+            except TypeError:
+                anim.update()
+            anim.draw(screen)
+            if hasattr(anim, "finished") and anim.finished:
+                active_animations.remove(anim)
+            elif hasattr(anim, "active") and not anim.active:
+                active_animations.remove(anim)
 
         menu_button_rect = None
 
@@ -94,12 +124,6 @@ def run_game():
                             game.active_powerup = None
                         else:
                             game.active_powerup = None
-
-        if not game_over and not game_won:
-            if not mechanics_logic(game):
-                return False
-
-        clock.tick(60)
 
 running = True
 while running:
