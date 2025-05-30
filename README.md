@@ -14,8 +14,7 @@ Growth 2048 adalah permainan puzzle berbasis grid dengan ukuran 4x4 yang merupak
 
 ## Screenshots
 
-<img src="Screenshot/1.png">
-<img src="Screenshot/2.png">
+<img src="Screenshot/1.png"> <img src="Screenshot/2.png">
 
 ## Diagram UML
 
