@@ -12,6 +12,20 @@ Growth 2048 adalah permainan puzzle berbasis grid dengan ukuran 4x4 yang merupak
 5. Permainan akan berakhir jika semua tile terisi penuh dan tidak ada gerakan lain yang mungkin dilakukan.
 6. Permainan tamat ketika pemain bisa mencapai tahap tertinggi tumbuhan
 
+
+## Cara Unduh Game
+1. Klik "<> Code" di repositori github dan unduh file ZIP
+2. Jika belum install pygame : 
+Windows : 
+`pip install pygame`
+Linux :
+`sudo apt-get install python3-pygame`
+Mac :
+`pip3 install pygame`
+3. Buka folder "py"
+4. Buka file "main.py"
+5. Run
+
 ## Screenshots
 
 <p align="center">
