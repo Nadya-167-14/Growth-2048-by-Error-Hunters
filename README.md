@@ -16,10 +16,10 @@ Growth 2048 adalah permainan puzzle berbasis grid dengan ukuran 4x4 yang merupak
 
 | Nama       | NIM                 | Kontribusi Utama                  | |
 |------------|---------------------|-----------------------------------|----|
-| Nadya Shafwah Yusuf   | 123140167 | Project Leader, Progammer  | |
+| Nadya Shafwah Yusuf   | 123140167 | Project Leader, Progammer  | [Nadya-167-14](https://github.com/Nadya-167-14) |
 | Fadina Mustika Ratnaningsih  | 123140157 | Designer UI, Researcher| |
 | M. Farhan Muzakhi  | 123140075 | Progammer, Researcher| |
-| Punky Wijayanto M  | 119140088 | Progammer, Researcher | @punkyanto123@gmail.com |
+| Punky Wijayanto M  | 119140088 | Progammer, Researcher |  |
 | Bulan Nindya Sapta Putri  | 120140231 | Progammer, Researcher| |
 
 ## Referensi
