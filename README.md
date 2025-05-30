@@ -25,6 +25,7 @@ Linux :
 
 Mac :
 `pip3 install pygame`
+
 3. Buka folder "py"
 4. Buka file "main.py"
 5. Run
