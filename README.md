@@ -18,16 +18,19 @@ Growth 2048 adalah permainan puzzle berbasis grid dengan ukuran 4x4 yang merupak
 2. Jika belum install pygame, buka terminal dan install : 
 
 Windows : 
-`pip install pygame`
+
+```pip install pygame```
 
 Linux :
-`sudo apt-get install python3-pygame`
+
+```sudo apt-get install python3-pygame```
 
 Mac :
-`pip3 install pygame`
 
-3. Buka folder "py"
-4. Buka file "main.py"
+```pip3 install pygame```
+
+3. Buka folder `py`
+4. Buka file `main.py`
 5. Run
 
 ## Screenshots
@@ -52,6 +55,6 @@ Mac :
 | Bulan Nindya Sapta Putri  | 120140231 | Programmer, Designer UI| [Bulan](https://github.com/120140231-bulan)|
 
 ## Referensi
-https://github.com/gabrielecirulli/2048
+[Original 2048](https://github.com/gabrielecirulli/2048)
 
-https://craftpix.net/freebies/free-forest-objects-top-down-pixel-art/?num=1&count=695&sq=pixelplant&pos=2
+[Aset Tumbuhan](https://craftpix.net/freebies/free-forest-objects-top-down-pixel-art/?num=1&count=695&sq=pixelplant&pos=2)
