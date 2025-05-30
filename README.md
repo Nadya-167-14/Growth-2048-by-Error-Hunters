@@ -38,6 +38,8 @@ Mac :
 <p align="center">
 <img src="Screenshot/1.png">
 <img src="Screenshot/2.png">
+<img src="Screenshot/win.png">
+<img src="Screenshot/gameover.png">
 </p>
 
 ## Diagram UML
