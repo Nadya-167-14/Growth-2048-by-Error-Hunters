@@ -1,4 +1,7 @@
 # Growth 2048
+<p align="center">
+  <img src="Screenshots/GROWTH.png" height="196px" />
+</p>
 Growth 2048 adalah permainan puzzle berbasis grid dengan ukuran 4x4 yang merupakan terinspirasi dari permainan 2048 klasik. Alih-alih menggabungkan angka, pemain akan menggabungkan tumbuhan, sehingga tumbuhan berevolusi ke tahap pertumbuhan selanjutnya. Tujuan utama dari permainan iin adalah menggabungkan tumbuhan hingga mencapai tumbuhan tertinggi dalam tahap revolusi.
 
 ## Cara Bermain
