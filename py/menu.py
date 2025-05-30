@@ -1,6 +1,7 @@
 import pygame
 import sys
-from option import draw_options
+from option import options_menu
+from details import detail_menu
 
 title_image = pygame.image.load("assets/title.png")
 background = pygame.image.load("assets/Main menu.png")
@@ -84,9 +85,9 @@ def show_menu(screen):
                         pygame.mixer.music.fadeout(1000)
                         return
                     elif button.action_name == "OPTIONS":
-                        pygame.mixer.music.pause()
-                        draw_options(screen)
-                        pygame.mixer.music.unpause()
+                        options_menu()
+                    elif button.action_name == "DETAIL":
+                        detail_menu()
 
         for button in buttons:
             button.check_hover(mouse_pos)
