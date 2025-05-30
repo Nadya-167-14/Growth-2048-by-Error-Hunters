@@ -1,4 +1,4 @@
-# Growth 2048
+<h1 align="center">Growth 2048</h1>
 <p align="center">
   <img src="Screenshot/GROWTH.png" height="196px" />
 </p>
