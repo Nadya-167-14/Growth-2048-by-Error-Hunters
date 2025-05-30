@@ -27,13 +27,10 @@ class Game2048:
         
         self.TILE_SIZE = 100 
         self.TILE_SPACING = 10 
-        
         self.total_board_dimension = self.grid_size * self.TILE_SIZE + (self.grid_size + 1) * self.TILE_SPACING
-        
         self.BOARD_X_OFFSET = (screen_width - self.total_board_dimension) // 2
-        self.BOARD_Y_OFFSET = (screen_width - self.total_board_dimension) // 2
+        self.BOARD_Y_OFFSET = (screen_height - self.total_board_dimension) // 3.5
 
-        # Load sound effects
         self.move_sfx = pygame.mixer.Sound("assets/sfx/move.wav")
         self.merge_sfx = pygame.mixer.Sound("assets/sfx/merge.wav")
         self.move_sfx.set_volume(0.5)
@@ -79,7 +76,7 @@ class Game2048:
                         self.tiles.remove(b)
                         merged_any = True
             if merged_any:
-                self.merge_sfx.play()  # ← Play merge SFX
+                self.merge_sfx.play()
             return mat, score_gained
 
         old = [[tile.value if tile else 0 for tile in row] for row in self.matrix]
@@ -140,7 +137,7 @@ class Game2048:
         new_state = [[tile.value if tile else 0 for tile in row] for row in self.matrix]
         if old != new_state:
             if moved_any:
-                self.move_sfx.play()  # ← Play move SFX
+                self.move_sfx.play()
             self.add_new_tile()
 
     def is_game_over(self):
@@ -157,6 +154,13 @@ class Game2048:
                         return False
         return True
 
+    def has_won(self):
+        for row in self.matrix:
+            for tile in row:
+                if tile and tile.value == 2048:
+                    return True
+        return False
+
     def get_tile_draw_pos(self, row, col):
         x_pos = self.BOARD_X_OFFSET + col * (self.TILE_SIZE + self.TILE_SPACING) + self.TILE_SPACING
         y_pos = self.BOARD_Y_OFFSET + row * (self.TILE_SIZE + self.TILE_SPACING) + self.TILE_SPACING
@@ -164,10 +168,8 @@ class Game2048:
 
     def get_board_coords(self, mouse_pos):
         mouse_x, mouse_y = mouse_pos
-        
         board_end_x = self.BOARD_X_OFFSET + self.grid_size * (self.TILE_SIZE + self.TILE_SPACING) + self.TILE_SPACING
         board_end_y = self.BOARD_Y_OFFSET + self.grid_size * (self.TILE_SIZE + self.TILE_SPACING) + self.TILE_SPACING
-
         if not (self.BOARD_X_OFFSET <= mouse_x < board_end_x and
                 self.BOARD_Y_OFFSET <= mouse_y < board_end_y):
             return None, None
@@ -177,15 +179,11 @@ class Game2048:
 
         col = (relative_x - self.TILE_SPACING) // (self.TILE_SIZE + self.TILE_SPACING)
         row = (relative_y - self.TILE_SPACING) // (self.TILE_SIZE + self.TILE_SPACING)
-        
+
         if 0 <= row < self.grid_size and 0 <= col < self.grid_size:
             tile_start_x = self.TILE_SPACING + col * (self.TILE_SIZE + self.TILE_SPACING)
             tile_start_y = self.TILE_SPACING + row * (self.TILE_SIZE + self.TILE_SPACING)
-
             if (relative_x >= tile_start_x and relative_x < tile_start_x + self.TILE_SIZE and
                 relative_y >= tile_start_y and relative_y < tile_start_y + self.TILE_SIZE):
                 return row, col
-            else:
-                return None, None
-        else:
-            return None, None
+        return None, None
