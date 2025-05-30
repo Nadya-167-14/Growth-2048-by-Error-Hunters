@@ -25,4 +25,5 @@ Growth 2048 adalah permainan puzzle berbasis grid dengan ukuran 4x4 yang merupak
 
 ## Referensi
 https://github.com/gabrielecirulli/2048
+
 https://craftpix.net/freebies/free-forest-objects-top-down-pixel-art/?num=1&count=695&sq=pixelplant&pos=2
