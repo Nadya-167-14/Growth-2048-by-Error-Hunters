@@ -49,7 +49,7 @@ Mac :
 | Fadina Mustika Ratnaningsih  | 123140157 | Designer UI, Programmer| [Fadina](https://github.com/04-157-Fadina)|
 | M. Farhan Muzakhi  | 123140075 | Programmer, Researcher| [Farhan](https://github.com/13-075-muhammadfarhanmuzakhi)|
 | Punky Wijayanto M  | 119140088 | Programmer, Researcher | [Punky](https://github.com/Punkyanto) |
-| Bulan Nindya Sapta Putri  | 120140231 | Programmer, Researcher| [Bulan](https://github.com/120140231-bulan)|
+| Bulan Nindya Sapta Putri  | 120140231 | Programmer, Designer UI| [Bulan](https://github.com/120140231-bulan)|
 
 ## Referensi
 https://github.com/gabrielecirulli/2048
