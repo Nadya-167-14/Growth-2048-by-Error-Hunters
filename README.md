@@ -12,6 +12,12 @@ Growth 2048 adalah permainan puzzle berbasis grid dengan ukuran 4x4 yang merupak
 5. Permainan akan berakhir jika semua tile terisi penuh dan tidak ada gerakan lain yang mungkin dilakukan.
 6. Permainan tamat ketika pemain bisa mencapai tahap tertinggi tumbuhan
 
+## Screenshots
+
+<img src="screenshot/1.png">
+<img src="screenshot/2.png">
+<img src="screenshot/3.png">
+
 ## Diagram UML
 
 <img src="Screenshot/uml.png">
